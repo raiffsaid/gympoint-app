@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { Promisify } from 'util';
+import { promisify } from 'util';
 
 import authConfig from '../../config/auth';
 
@@ -8,6 +8,7 @@ export default async (req, res, next) => {
 
   if (!authHeader) {
     return res.status(401).json({
+      auth: false,
       error: 'Token not provided',
     });
   }
@@ -15,12 +16,16 @@ export default async (req, res, next) => {
   const [, token] = authHeader.split(' ');
 
   try {
-    const decoded = await Promisify(jwt.verify)(token, authConfig.secret);
+    const decoded = await promisify(jwt.verify)(token, authConfig.secret);
+
+    // Incluir o ID do usuário dentro do request
+    req.userId = decoded.id;
 
     return next();
   } catch (error) {
     return res.status(401).json({
-      error: 'Invalid Token',
+      auth: false,
+      error: 'Failed to authenticate token',
     });
   }
 };
