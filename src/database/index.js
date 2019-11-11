@@ -1,8 +1,12 @@
 import Sequelize from 'sequelize';
+// Importar os models
 import User from '../app/models/User';
+import Student from '../app/models/Student';
+
 import databaseConfig from '../config/database';
 
-const models = [User];
+// Array com todos os models da aplicação
+const models = [User, Student];
 
 class Database {
   constructor() {
@@ -11,7 +15,7 @@ class Database {
 
   init() {
     this.connection = new Sequelize(databaseConfig);
-
+    // Percorre o array, chamando o método init de cada model
     models.map(model => model.init(this.connection));
   }
 }
