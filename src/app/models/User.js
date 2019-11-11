@@ -1,5 +1,4 @@
 import Sequelize, { Model } from 'sequelize';
-import bcrypt from 'bcryptjs';
 
 class User extends Model {
   static init(sequelize) {
@@ -14,13 +13,6 @@ class User extends Model {
         sequelize,
       }
     );
-
-    // Gera um hash a partir do password e salva no banco
-    this.addHook('beforeSave', async user => {
-      if (user.password) {
-        user.password_hash = await bcrypt.hash('123456', 8);
-      }
-    });
 
     return this;
   }
